@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Alternance">
+<meta name="theme-color" content="#1e293b">
+<meta name="format-detection" content="telephone=no">
+<title>Alternance — Mastere ENI 2 MTP 26-27</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<style>
+:root{
+  --bg:#f2f2f7; --card:#ffffff; --txt:#1c1c1e; --muted:#8e8e93; --line:#e5e5ea;
+  --school:#34c759; --company:#32ade6; --holiday:#ff453a; --off:#ff9f0a; --mixed:#af52de;
+  --weekend:#ececf1; --accent:#0a84ff;
+  --r:14px; --nav:58px;
+  --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
+}
+html[data-theme="dark"]{
+  --bg:#000000; --card:#1c1c1e; --txt:#f2f2f7; --muted:#98989f; --line:#2c2c2e; --weekend:#2c2c2e;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;overscroll-behavior-y:none}
+body{
+  background:var(--bg);color:var(--txt);
+  font:400 16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(var(--nav) + var(--sab) + 14px);
+}
+button,input,textarea{font-family:inherit;color:inherit}
+/* ---------- HEADER ---------- */
+header{
+  position:sticky;top:0;z-index:40;
+  padding:calc(var(--sat) + 10px) 16px 10px;
+  background:color-mix(in srgb,var(--card) 82%,transparent);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--line);
+}
+header .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+header h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.4px}
+header p{margin:1px 0 0;font-size:12px;color:var(--muted)}
+.icobtn{width:38px;height:38px;border-radius:19px;border:none;background:var(--bg);
+  font-size:12px;font-weight:700;letter-spacing:-.2px;display:grid;place-items:center}
+.icobtn:active{opacity:.55}
+/* ---------- LAYOUT ---------- */
+main{padding:14px}
+.view{display:none;animation:fade .22s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 2px;font-size:16px;font-weight:700;letter-spacing:-.3px}
+.card .sub{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.sect{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.6px;margin:20px 4px 8px}
+/* ---------- BANDEAU STATUT ---------- */
+.status{border-radius:var(--r);padding:16px;color:#fff;margin-bottom:14px}
+.status .lab{font-size:11.5px;text-transform:uppercase;letter-spacing:1px;opacity:.85}
+.status .big{font-size:26px;font-weight:800;letter-spacing:-.8px;margin:3px 0 2px}
+.status .det{font-size:13.5px;opacity:.92}
+.bg-school{background:linear-gradient(135deg,#2fb350,#34c759)}
+.bg-company{background:linear-gradient(135deg,#0b84c7,#32ade6)}
+.bg-off{background:linear-gradient(135deg,#e08800,#ff9f0a)}
+.bg-holiday{background:linear-gradient(135deg,#d93a30,#ff453a)}
+.bg-mixed{background:linear-gradient(135deg,#8e3fc0,#af52de)}
+.bg-weekend,.bg-out{background:linear-gradient(135deg,#6e6e73,#8e8e93)}
+/* ---------- KPI ---------- */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border-radius:var(--r);padding:13px}
+.kpi span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.kpi b{display:block;font-size:20px;font-weight:800;letter-spacing:-.6px;margin-top:3px}
+.prog{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--school);border-radius:99px;transition:.5s}
+/* ---------- NAV SEMAINE ---------- */
+.wknav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.wknav button{flex:0 0 46px;height:44px;border-radius:12px;border:none;background:var(--card);
+  font-size:17px;font-weight:700}
+.wknav button:active{background:var(--line)}
+.wknav .title{flex:1;text-align:center;background:var(--card);height:44px;border-radius:12px;
+  display:flex;flex-direction:column;justify-content:center}
+.wknav .title b{font-size:14px;font-weight:700;letter-spacing:-.2px}
+.wknav .title small{font-size:11px;color:var(--muted)}
+/* ---------- LISTE JOURS ---------- */
+.dlist{background:var(--card);border-radius:var(--r);overflow:hidden}
+.drow{display:flex;align-items:center;gap:13px;padding:12px 15px;min-height:56px;
+  border-bottom:.5px solid var(--line)}
+.drow:last-child{border-bottom:none}
+.drow:active{background:var(--bg)}
+.drow .dt{width:44px;flex:0 0 44px;text-align:center}
+.drow .dt b{display:block;font-size:19px;font-weight:700;line-height:1.05;letter-spacing:-.5px}
+.drow .dt span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.drow .info{flex:1;min-width:0}
+.drow .info b{display:block;font-size:15px;font-weight:600}
+.drow .info span{font-size:12px;color:var(--muted)}
+.drow.today{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.drow.today .dt b{background:var(--accent);color:#fff;border-radius:9px;display:block}
+.drow.wknd .info b{color:var(--muted);font-weight:500}
+.dot{width:11px;height:11px;border-radius:50%;flex:0 0 11px}
+.bar4{width:4px;align-self:stretch;border-radius:3px;margin:-2px 0}
+/* ---------- CALENDRIER ---------- */
+.month{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.month h3{margin:0 0 10px;font-size:15px;font-weight:700;text-transform:capitalize;
+  display:flex;justify-content:space-between;align-items:baseline;letter-spacing:-.3px}
+.month h3 em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--school)}
+.grid7,.dows{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dows span{text-align:center;font-size:10.5px;color:var(--muted);padding-bottom:5px;font-weight:600}
+.day{aspect-ratio:1;border-radius:9px;display:grid;place-items:center;
+  font-size:13px;font-weight:600;letter-spacing:-.3px}
+.day:active{transform:scale(.9)}
+.s-school{background:var(--school);color:#04290f}
+.s-company{background:var(--company);color:#03242f}
+.s-holiday{background:var(--holiday);color:#fff}
+.s-off{background:var(--off);color:#3a2200}
+.s-weekend{background:var(--weekend);color:var(--muted);font-weight:500}
+.s-out{background:transparent;color:var(--muted);opacity:.3}
+.day.today{box-shadow:inset 0 0 0 2.5px var(--accent)}
+.day.selw{box-shadow:inset 0 0 0 1.5px var(--txt)}
+/* ---------- FRISE ---------- */
+.tl{display:flex;gap:3px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0 6px}
+.tl::-webkit-scrollbar{display:none}
+.tw{flex:0 0 17px}
+.tw .b{height:34px;border-radius:5px;overflow:hidden;display:flex;flex-direction:column}
+.tw .b i{flex:1}
+.tw.sel .b{box-shadow:0 0 0 2px var(--txt)}
+.tw small{display:block;text-align:center;font-size:8.5px;color:var(--muted);margin-top:2px}
+/* ---------- PERIODES ---------- */
+.plist{background:var(--card);border-radius:var(--r);overflow:hidden}
+.prow{display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:.5px solid var(--line)}
+.prow:last-child{border-bottom:none}
+.prow .txt{flex:1;min-width:0}
+.prow .txt b{display:block;font-size:14.5px;font-weight:600}
+.prow .txt span{font-size:12px;color:var(--muted)}
+.prow .hrs{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.prow.past{opacity:.45}
+/* ---------- REGLAGES ---------- */
+.list{background:var(--card);border-radius:var(--r);overflow:hidden}
+.item{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 15px;min-height:50px;border-bottom:.5px solid var(--line);font-size:15px;width:100%;
+  background:none;border-left:none;border-right:none;border-top:none;text-align:left}
+.item:last-child{border-bottom:none}
+.item:active{background:var(--bg)}
+.item small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:400}
+.item .chev{color:var(--muted);font-size:17px}
+.item.danger{color:var(--holiday)}
+.legend .li{display:flex;align-items:center;gap:11px;padding:11px 15px;border-bottom:.5px solid var(--line);font-size:14.5px}
+.legend .li:last-child{border-bottom:none}
+.sw{width:34px;height:20px;border-radius:99px;background:var(--line);position:relative;flex:0 0 34px;transition:.2s}
+.sw i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.2s}
+.sw.on{background:var(--school)}.sw.on i{transform:translateX(14px)}
+textarea{width:100%;border:none;background:var(--card);border-radius:var(--r);padding:14px;
+  font-size:15px;resize:none;outline:none;min-height:88px}
+.note{font-size:12.5px;color:var(--muted);padding:0 6px;margin:10px 0 0}
+/* ---------- TAB BAR ---------- */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
+  padding-bottom:var(--sab);
+  background:color-mix(in srgb,var(--card) 84%,transparent);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-top:.5px solid var(--line)}
+nav button{flex:1;height:var(--nav);border:none;background:none;color:var(--muted);
+  font-size:10.5px;font-weight:600;letter-spacing:-.1px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px}
+nav button.on{color:var(--accent)}
+nav .gl{width:22px;height:22px;display:block;position:relative}
+nav .gl::before{content:"";position:absolute;inset:0;border:2px solid currentColor;border-radius:6px}
+nav button[data-v="week"] .gl::after{content:"";position:absolute;left:4px;right:4px;top:9px;height:2px;background:currentColor}
+nav button[data-v="year"] .gl::after{content:"";position:absolute;left:4px;top:8px;width:4px;height:4px;
+  background:currentColor;box-shadow:6px 0 0 currentColor,0 6px 0 currentColor,6px 6px 0 currentColor}
+nav button[data-v="periods"] .gl::before{border-radius:3px}
+nav button[data-v="periods"] .gl::after{content:"";position:absolute;left:5px;top:6px;width:12px;height:2px;
+  background:currentColor;box-shadow:0 4px 0 currentColor,0 8px 0 currentColor}
+nav button[data-v="more"] .gl::before{border:none}
+nav button[data-v="more"] .gl::after{content:"";position:absolute;left:2px;top:10px;width:4px;height:4px;
+  border-radius:50%;background:currentColor;box-shadow:7px 0 0 currentColor,14px 0 0 currentColor}
+/* ---------- TOAST ---------- */
+#toast{position:fixed;left:50%;bottom:calc(var(--nav) + var(--sab) + 18px);transform:translate(-50%,14px);
+  background:#1c1c1e;color:#fff;padding:11px 18px;border-radius:22px;font-size:13.5px;font-weight:600;
+  opacity:0;pointer-events:none;transition:.25s;z-index:70;max-width:86%;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="row">
+    <div>
+      <h1>Mastere ENI 2 MTP</h1>
+      <p>Alternance 2026 / 2027 &middot; 602 h &middot; 18 semaines</p>
+    </div>
+    <button class="icobtn" id="themeBtn" onclick="toggleTheme()">Nuit</button>
+  </div>
+</header>
+
+<main>
+  <!-- ===== SEMAINE ===== -->
+  <section class="view on" id="v-week">
+    <div class="status" id="st-card">
+      <div class="lab" id="st-lab">Aujourd'hui</div>
+      <div class="big" id="st-big">—</div>
+      <div class="det" id="st-det"></div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><span>Heures centre</span><b id="k-h">—</b>
+        <div class="prog"><i id="k-bar"></i></div></div>
+      <div class="kpi"><span>Semaines restantes</span><b id="k-w">—</b>
+        <div class="prog"><i id="k-bar2"></i></div></div>
+    </div>
+
+    <div class="wknav">
+      <button onclick="shiftWeek(-1)" aria-label="Semaine precedente">&#8249;</button>
+      <div class="title" onclick="goToday()">
+        <b id="w-title">—</b><small id="w-sub"></small>
+      </div>
+      <button onclick="shiftWeek(1)" aria-label="Semaine suivante">&#8250;</button>
+    </div>
+
+    <div class="dlist" id="w-days"></div>
+
+    <div class="sect">Note de la semaine</div>
+    <textarea id="w-note" placeholder="Objectifs, rendus, reunions..."></textarea>
+
+    <p class="note">Balayez l'ecran vers la gauche ou la droite pour changer de semaine. Touchez le titre pour revenir a aujourd'hui.</p>
+  </section>
+
+  <!-- ===== ANNEE ===== -->
+  <section class="view" id="v-year">
+    <div class="card">
+      <h2>Vue annuelle</h2>
+      <div class="sub">Une barre par semaine. Touchez pour l'ouvrir.</div>
+      <div class="tl" id="tl"></div>
+    </div>
+    <div id="months"></div>
+    <div class="sect">Legende</div>
+    <div class="list legend">
+      <div class="li"><span class="dot" style="background:var(--company)"></span>En entreprise</div>
+      <div class="li"><span class="dot" style="background:var(--school)"></span>Formation au centre</div>
+      <div class="li"><span class="dot" style="background:var(--holiday)"></span>Jour ferie</div>
+      <div class="li"><span class="dot" style="background:var(--off)"></span>Conge ou absence</div>
+      <div class="li"><span class="dot" style="background:var(--weekend)"></span>Week-end</div>
+    </div>
+  </section>
+
+  <!-- ===== PERIODES ===== -->
+  <section class="view" id="v-periods">
+    <div class="card" style="padding-bottom:8px">
+      <h2>Periodes</h2>
+      <div class="sub">Enchainement des blocs centre et entreprise.</div>
+    </div>
+    <div class="plist" id="periods"></div>
+    <p class="note">Les periodes passees sont grisees. 7 h comptabilisees par jour de formation.</p>
+  </section>
+
+  <!-- ===== PLUS ===== -->
+  <section class="view" id="v-more">
+    <div class="sect">Modification du planning</div>
+    <div class="list">
+      <div class="item">
+        <div>Mode edition<small>Toucher un jour change son statut</small></div>
+        <div class="sw" id="swEdit" onclick="toggleEdit()"><i></i></div>
+      </div>
+    </div>
+    <p class="note">Cycle au toucher : Centre &rarr; Entreprise &rarr; Conge &rarr; Automatique. Les corrections restent enregistrees sur cet iPhone.</p>
+
+    <div class="sect">Donnees</div>
+    <div class="list">
+      <button class="item" onclick="exportICS()">Ajouter au calendrier iPhone<small>Fichier .ics a ouvrir dans Calendrier</small><span class="chev">&#8250;</span></button>
+      <button class="item" onclick="exportJSON()">Exporter mes modifications<small>Sauvegarde .json</small><span class="chev">&#8250;</span></button>
+      <button class="item" onclick="document.getElementById('imp').click()">Importer une sauvegarde<span class="chev">&#8250;</span></button>
+      <button class="item danger" onclick="resetAll()">Tout reinitialiser</button>
+    </div>
+    <input type="file" id="imp" accept=".json,application/json" hidden onchange="importJSON(this)">
+
+    <div class="sect">Installation</div>
+    <div class="list">
+      <div class="item" style="display:block">Ajouter a l'ecran d'accueil
+        <small>Safari &rarr; bouton Partager &rarr; Sur l'ecran d'accueil. L'application s'ouvre alors en plein ecran, sans barre Safari.</small></div>
+    </div>
+
+    <div class="sect">A propos</div>
+    <div class="list">
+      <div class="item" style="display:block">Source du planning
+        <small>Reconstruit a partir des volumes horaires mensuels du document officiel : 70 / 70 / 35 / 98 / 0 / 105 / 14 / 84 / 42 / 63 / 0 / 0 / 21 = 602 h. Utilisez le mode edition pour corriger une semaine.</small></div>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button class="on" data-v="week" onclick="show('week',this)"><span class="gl"></span>Semaine</button>
+  <button data-v="year" onclick="show('year',this)"><span class="gl"></span>Annee</button>
+  <button data-v="periods" onclick="show('periods',this)"><span class="gl"></span>Periodes</button>
+  <button data-v="more" onclick="show('more',this)"><span class="gl"></span>Plus</button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+/* ========= CONFIGURATION ========= */
+const CFG={
+  start:"2026-09-07", end:"2027-09-08", hpd:7,
+  school:[
+    ["2026-09-07","2026-09-18"],
+    ["2026-10-12","2026-10-23"],
+    ["2026-11-09","2026-11-13"],
+    ["2026-11-30","2026-12-18"],
+    ["2027-02-08","2027-03-02"],
+    ["2027-04-01","2027-04-16"],
+    ["2027-05-24","2027-06-11"],
+    ["2027-09-06","2027-09-08"]
+  ]
+};
+/* ========= DATES ========= */
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const D=s=>{const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c);};
+const add=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const monday=d=>add(d,d.getDay()===0?-6:1-d.getDay());
+const DOW=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+const fmtL=d=>d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+const fmtS=d=>d.toLocaleDateString("fr-FR",{day:"2-digit",month:"short"});
+function weekNum(d){const t=new Date(d);t.setDate(t.getDate()+3-((t.getDay()+6)%7));
+  const w1=new Date(t.getFullYear(),0,4);
+  return 1+Math.round(((t-w1)/864e5-3+((w1.getDay()+6)%7))/7);}
+function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,
+  f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,
+  l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+  mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return new Date(y,mo-1,da);}
+const HOL={};
+[2026,2027].forEach(y=>{const p=easter(y);
+  Object.assign(HOL,{[y+"-01-01"]:"Jour de l'An",[y+"-05-01"]:"Fete du Travail",
+   [y+"-05-08"]:"Victoire 1945",[y+"-07-14"]:"Fete nationale",[y+"-08-15"]:"Assomption",
+   [y+"-11-01"]:"Toussaint",[y+"-11-11"]:"Armistice",[y+"-12-25"]:"Noel",
+   [iso(add(p,1))]:"Lundi de Paques",[iso(add(p,39))]:"Ascension",[iso(add(p,50))]:"Lundi de Pentecote"});});
+/* ========= ETAT ========= */
+let OV=JSON.parse(localStorage.getItem("alt_ov")||"{}");
+let NOTES=JSON.parse(localStorage.getItem("alt_notes")||"{}");
+let sel=new Date(), edit=false;
+const save=()=>{localStorage.setItem("alt_ov",JSON.stringify(OV));
+  localStorage.setItem("alt_notes",JSON.stringify(NOTES));};
+const inSchool=s=>CFG.school.some(([a,b])=>s>=a&&s<=b);
+function statusOf(s){
+  if(s<CFG.start||s>CFG.end)return "out";
+  if(OV[s])return OV[s];
+  const w=D(s).getDay();
+  if(w===0||w===6)return "weekend";
+  if(HOL[s])return "holiday";
+  return inSchool(s)?"school":"company";
+}
+const LBL={school:"Formation au centre",company:"En entreprise",holiday:"Jour ferie",
+  off:"Conge",weekend:"Week-end",out:"Hors contrat"};
+const SHORT={school:"Centre",company:"Entreprise",holiday:"Ferie",off:"Conge",weekend:"Repos",out:"—"};
+const allDays=()=>{const o=[];for(let d=D(CFG.start);d<=D(CFG.end);d=add(d,1))o.push(iso(d));return o;};
+/* ========= RENDU ========= */
+function render(){kpi();week();tl();year();periods();}
+
+function kpi(){
+  const t=iso(new Date()),days=allDays();
+  const tot=days.filter(s=>statusOf(s)==="school").length;
+  const done=days.filter(s=>s<=t&&statusOf(s)==="school").length;
+  const st=statusOf(t);
+  const c=document.getElementById("st-card");
+  c.className="status bg-"+st;
+  document.getElementById("st-lab").textContent=fmtL(new Date());
+  document.getElementById("st-big").textContent=HOL[t]&&st==="holiday"?HOL[t]:LBL[st];
+  let det="";
+  if(t>=CFG.start&&t<=CFG.end){
+    const base=["school","company"].includes(st)?st:null;
+    for(let d=add(new Date(),1);iso(d)<=CFG.end;d=add(d,1)){
+      const s=statusOf(iso(d));
+      if(["school","company"].includes(s)&&s!==base){
+        const n=Math.round((D(iso(d))-D(t))/864e5);
+        det=LBL[s].toLowerCase()+" dans "+n+" jour"+(n>1?"s":"")+" ("+fmtS(d)+")";break;}}
+  } else det = t<CFG.start ? "Debut du contrat le 07/09/2026" : "Contrat termine";
+  document.getElementById("st-det").textContent=det;
+  document.getElementById("k-h").textContent=done*CFG.hpd+" / "+tot*CFG.hpd+" h";
+  document.getElementById("k-bar").style.width=(tot?done/tot*100:0)+"%";
+  const rw=Math.ceil(days.filter(s=>s>t&&statusOf(s)==="school").length/5);
+  const tw=Math.ceil(tot/5);
+  document.getElementById("k-w").textContent=rw+" sur "+tw;
+  document.getElementById("k-bar2").style.width=(tw?(tw-rw)/tw*100:0)+"%";
+}
+function week(){
+  const m=monday(sel),cur=iso(monday(new Date()))===iso(m);
+  document.getElementById("w-title").textContent=(cur?"Cette semaine":"Semaine")+" "+weekNum(m);
+  document.getElementById("w-sub").textContent=fmtS(m)+" au "+fmtS(add(m,6))+" "+add(m,6).getFullYear();
+  let h="";
+  for(let i=0;i<7;i++){
+    const d=add(m,i),s=iso(d),st=statusOf(s),today=s===iso(new Date());
+    const col=st==="weekend"||st==="out"?"var(--muted)":"var(--"+st+")";
+    h+=`<div class="drow ${today?"today":""} ${st==="weekend"?"wknd":""}" data-iso="${s}">
+      <span class="bar4" style="background:${col}"></span>
+      <div class="dt"><b>${d.getDate()}</b><span>${DOW[i].slice(0,3)}</span></div>
+      <div class="info"><b>${HOL[s]&&st==="holiday"?HOL[s]:LBL[st]}</b>
+        <span>${st==="school"?CFG.hpd+" h de formation":d.toLocaleDateString("fr-FR",{month:"long"})}</span></div>
+      <span class="dot" style="background:${col}"></span></div>`;}
+  document.getElementById("w-days").innerHTML=h;
+  document.getElementById("w-note").value=NOTES["W"+iso(m)]||"";
+}
+function tl(){
+  let h="",m=monday(D(CFG.start)),sm=iso(monday(sel));
+  while(m<=D(CFG.end)){
+    let seg="";
+    for(let i=0;i<5;i++){const st=statusOf(iso(add(m,i)));
+      seg+=`<i style="background:var(--${st==="out"?"weekend":st})"></i>`;}
+    h+=`<div class="tw ${iso(m)===sm?"sel":""}" data-week="${iso(m)}">
+      <div class="b">${seg}</div><small>${weekNum(m)}</small></div>`;
+    m=add(m,7);}
+  const e=document.getElementById("tl");e.innerHTML=h;
+  const s=e.querySelector(".sel");
+  if(s)e.scrollLeft=s.offsetLeft-e.clientWidth/2+10;
+}
+function year(){
+  let h="",cur=new Date(2026,8,1);const end=new Date(2027,8,1),sm=iso(monday(sel));
+  while(cur<=end){
+    const y=cur.getFullYear(),mo=cur.getMonth(),first=new Date(y,mo,1),nb=new Date(y,mo+1,0).getDate();
+    let cells="",hrs=0;
+    for(let i=0;i<(first.getDay()+6)%7;i++)cells+="<div></div>";
+    for(let d=1;d<=nb;d++){
+      const dt=new Date(y,mo,d),s=iso(dt),st=statusOf(s);
+      if(st==="school")hrs+=CFG.hpd;
+      cells+=`<div class="day s-${st} ${s===iso(new Date())?"today":""} ${iso(monday(dt))===sm?"selw":""}" data-iso="${s}">${d}</div>`;}
+    h+=`<div class="month"><h3>${first.toLocaleDateString("fr-FR",{month:"long",year:"numeric"})}
+      <em>${hrs?hrs+" h":""}</em></h3>
+      <div class="dows"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7">${cells}</div></div>`;
+    cur=new Date(y,mo+1,1);}
+  document.getElementById("months").innerHTML=h;
+}
+function getPeriods(){
+  const o=[];let c=null;
+  allDays().forEach(s=>{const st=statusOf(s);
+    if(st==="weekend"||st==="holiday")return;
+    if(!c||c.type!==st){if(c)o.push(c);c={type:st,from:s,to:s,days:1};}
+    else{c.to=s;c.days++;}});
+  if(c)o.push(c);return o;
+}
+function periods(){
+  const t=iso(new Date());
+  document.getElementById("periods").innerHTML=getPeriods().map(p=>
+   `<div class="prow ${p.to<t?"past":""}" data-iso="${p.from}">
+      <span class="bar4" style="background:var(--${p.type});min-height:34px"></span>
+      <div class="txt"><b>${LBL[p.type]}</b>
+        <span>${fmtS(D(p.from))} au ${fmtS(D(p.to))} &middot; ${p.days} j</span></div>
+      <div class="hrs">${p.type==="school"?p.days*CFG.hpd+" h":""}</div></div>`).join("");
+}
+/* ========= INTERACTIONS ========= */
+const CYCLE={school:"company",company:"off",off:"auto",weekend:"company",holiday:"company"};
+document.addEventListener("click",e=>{
+  const w=e.target.closest(".tw");
+  if(w){sel=D(w.dataset.week);render();show("week",document.querySelector('nav [data-v="week"]'));return;}
+  const el=e.target.closest("[data-iso]");
+  if(!el)return;
+  const s=el.dataset.iso,st=statusOf(s);
+  if(st==="out")return;
+  if(edit){
+    const nx=CYCLE[OV[s]||st];
+    if(nx==="auto")delete OV[s];else OV[s]=nx;
+    save();render();
+    toast(LBL[statusOf(s)]);
+    if(navigator.vibrate)navigator.vibrate(8);
+  }else{
+    sel=D(s);render();
+    if(!el.closest("#v-week")){show("week",document.querySelector('nav [data-v="week"]'));
+      window.scrollTo({top:0,behavior:"smooth"});}
+  }
+});
+/* balayage horizontal sur la vue semaine */
+let x0=null,y0=null;
+const vw=document.getElementById("v-week");
+vw.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+vw.addEventListener("touchend",e=>{
+  if(x0===null)return;
+  const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;
+  if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.8){shiftWeek(dx<0?1:-1);
+    if(navigator.vibrate)navigator.vibrate(6);}
+  x0=null;},{passive:true});
+document.getElementById("w-note").addEventListener("input",e=>{
+  NOTES["W"+iso(monday(sel))]=e.target.value;save();});
+function shiftWeek(n){sel=add(sel,7*n);render();}
+function goToday(){sel=new Date();render();toast("Aujourd'hui");}
+function show(v,btn){
+  document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("on"));
+  if(btn)btn.classList.add("on");
+  window.scrollTo(0,0);
+  if(v==="year")tl();
+}
+function toggleEdit(){
+  edit=!edit;
+  document.getElementById("swEdit").classList.toggle("on",edit);
+  toast(edit?"Mode edition active":"Mode edition desactive");
+}
+function toggleTheme(){
+  const h=document.documentElement;
+  h.dataset.theme=h.dataset.theme==="dark"?"light":"dark";
+  localStorage.setItem("alt_theme",h.dataset.theme);
+  document.getElementById("themeBtn").textContent=h.dataset.theme==="dark"?"Jour":"Nuit";
+  document.querySelector('meta[name="theme-color"]').setAttribute("content",
+    h.dataset.theme==="dark"?"#000000":"#1e293b");
+}
+function resetAll(){
+  if(confirm("Reinitialiser toutes les modifications et notes ?")){
+    OV={};NOTES={};save();render();toast("Planning reinitialise");}
+}
+function exportICS(){
+  const c=s=>s.replace(/-/g,"");
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Alternance ENI//FR","CALSCALE:GREGORIAN",
+    "X-WR-CALNAME:Alternance Mastere ENI 26-27"];
+  getPeriods().forEach((p,i)=>{
+    L.push("BEGIN:VEVENT","UID:alt-"+i+"@eni","DTSTART;VALUE=DATE:"+c(p.from),
+      "DTEND;VALUE=DATE:"+c(iso(add(D(p.to),1))),
+      "SUMMARY:"+(p.type==="school"?"Formation ENI - centre":p.type==="off"?"Conge":"Entreprise"),
+      "TRANSP:TRANSPARENT","END:VEVENT");});
+  L.push("END:VCALENDAR");
+  dl("alternance-eni-26-27.ics",L.join("\r\n"),"text/calendar");
+}
+function exportJSON(){dl("planning-alternance.json",
+  JSON.stringify({overrides:OV,notes:NOTES},null,2),"application/json");}
+function importJSON(i){
+  const f=i.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{const j=JSON.parse(r.result);OV=j.overrides||{};NOTES=j.notes||{};
+    save();render();toast("Sauvegarde importee");}catch(e){toast("Fichier invalide");}};
+  r.readAsText(f);i.value="";
+}
+function dl(name,content,type){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=name;a.rel="noopener";document.body.appendChild(a);a.click();a.remove();
+}
+let tt;
+function toast(m){
+  const t=document.getElementById("toast");
+  t.textContent=m;t.classList.add("on");
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),1600);
+}
+/* ========= INIT ========= */
+document.documentElement.dataset.theme=localStorage.getItem("alt_theme")||"light";
+document.getElementById("themeBtn").textContent=
+  document.documentElement.dataset.theme==="dark"?"Jour":"Nuit";
+document.addEventListener("gesturestart",e=>e.preventDefault());
+render();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+}
+</script>
+</body>
+</html>
